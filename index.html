@@ -203,6 +203,15 @@
                 </tr>
             </thead>
             <tbody class="scr" id="th">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Loading...</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -335,6 +344,7 @@
                 medalData.sort((a, b) => b.points - a.points);
 
                 const tableBody = document.querySelector("#medalTable tbody");
+                tableBody.innerHTML = "";
                 medalData.forEach(country => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
