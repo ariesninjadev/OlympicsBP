@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css"
         integrity="sha512-bZBu2H0+FGFz/stDN/L0k8J0G8qVsAL0ht1qg5kTwtAheiXwiRKyCq1frwfbSFSJN3jooR5kauE0YjtPzhZtJQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         body,
         html {
@@ -36,7 +40,7 @@
 
         p {
             text-align: center;
-            width: 60%;
+            width: 80%;
             margin: 10px auto;
         }
 
@@ -109,6 +113,12 @@
             z-index: 1;
             box-shadow: inset 0 -2px 0 #000000;
             border-collapse: separate;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         tr:nth-child(even) {
@@ -119,15 +129,15 @@
             background-color: #f4f4f4;
         }
 
-        tr:nth-child(1) {
+        .scr tr:nth-child(1) {
             background-color: #ffef95;
         }
 
-        tr:nth-child(2) {
+        .scr tr:nth-child(2) {
             background-color: #d6d6d6;
         }
 
-        tr:nth-child(3) {
+        .scr tr:nth-child(3) {
             background-color: #e5b687;
         }
 
@@ -155,6 +165,13 @@
             font-weight: bold;
             color: #333;
         }
+
+        .filter {
+            cursor: pointer;
+            color: #333;
+            translate: 0 1px;
+            margin-right: 6px;
+        }
     </style>
 
 </head>
@@ -165,28 +182,145 @@
     <h3>Medal Ranking by Points</h3>
     <br>
     <p>
-        Most people rank countries at the Olympics either by the number of gold medals they've won or by their total medal count. Ranking by gold medals alone doesn't acknowledge athletes who win silver or bronze, while ranking by total medals diminishes the value of gold medals. To address this, we've come up with a points-based system: 3 points for a gold medal, 2 points for a silver, and 1 point for a bronze. You can visit my website to see the country rankings using this new system.
+        Most people rank countries at the Olympics either by the number of gold medals they've won or by their total
+        medal count. Ranking by gold medals alone doesn't acknowledge athletes who win silver or bronze, while ranking
+        by total medals diminishes the value of gold medals. To address this, we've come up with a points-based system:
+        3 points for a gold medal, 2 points for a silver, and 1 point for a bronze. You can visit my website to see the
+        country rankings using this new system.
     </p>
     <div class="container">
         <table id="medalTable">
             <thead>
                 <tr class="headtr">
                     <th>Rank</th>
-                    <th>Country</th>
-                    <th>Gold</th>
-                    <th>Silver</th>
-                    <th>Bronze</th>
-                    <th>Total Medals</th>
-                    <th>Points</th>
+                    <th><span id="f-co"><i class="fa-solid fa-filter fa-xs filter"></i></span>Country</th>
+                    <th><span id="f-go"><i class="fa-solid fa-filter fa-xs filter"></i></span>Gold</th>
+                    <th><span id="f-si"><i class="fa-solid fa-filter fa-xs filter"></i></span>Silver</th>
+                    <th><span id="f-br"><i class="fa-solid fa-filter fa-xs filter"></i></span>Bronze</th>
+                    <th><span id="f-to"><i class="fa-solid fa-filter fa-xs filter"></i></span>Total Medals</th>
+                    <th><span id="f-po"><i class="fa-solid fa-filter fa-xs filter"></i></span>Points</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="scr" id="th">
             </tbody>
         </table>
     </div>
     <p style="width:90%;margin-bottom:22px;">Concept and Site Copyrighted &copy; 2024 Aries Powvalla</p>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"
+        integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+        window.FontAwesome.dom.watch();
+
+        const filters = {
+            "f-co": 0,
+            "f-go": 0,
+            "f-si": 0,
+            "f-br": 0,
+            "f-to": 0,
+            "f-po": 1
+        }
+        const filterList = ["f-co", "f-go", "f-si", "f-br", "f-to", "f-po"];
+
+
+        filterList.forEach(element => {
+            console.log(element);
+            document.getElementById(element).addEventListener('click', function () {
+                console.log(this.id);
+                const svg = this.children[0];
+                if (filters[this.id] === 0) {
+                    filters[this.id] = -1;
+                    svg.classList.replace("fa-filter", "fa-arrow-down-wide-short");
+                }
+                else if (filters[this.id] === -1) {
+                    filters[this.id] = 1;
+                    svg.classList.replace("fa-arrow-down-wide-short", "fa-arrow-up-wide-short");
+                }
+                else {
+                    filters[this.id] = -1;
+                    svg.classList.replace("fa-arrow-up-wide-short", "fa-arrow-down-wide-short");
+                }
+                if (filters[this.id] !== 0) {
+                    filterList.forEach(filter => {
+                        if (filter !== this.id) {
+                            filters[filter] = 0;
+                            document.getElementById(filter).children[0].classList.replace("fa-arrow-up-wide-short", "fa-filter");
+                            document.getElementById(filter).children[0].classList.replace("fa-arrow-down-wide-short", "fa-filter");
+                        }
+                    });
+                    const table = document.querySelector("#medalTable tbody");
+                    const rows = Array.from(table.querySelectorAll("tr"));
+                    rows.sort((a, b) => {
+                        const aVal = parseInt(a.children[filterList.indexOf(this.id) + 1].textContent);
+                        const bVal = parseInt(b.children[filterList.indexOf(this.id) + 1].textContent);
+                        return (aVal - bVal) * filters[this.id];
+                    });
+                    rows.forEach(row => table.appendChild(row));
+                    if (this.id === "f-co") {
+                        rows.sort((a, b) => {
+                            const aVal = a.children[filterList.indexOf(this.id) + 1].textContent;
+                            const bVal = b.children[filterList.indexOf(this.id) + 1].textContent;
+                            return aVal.localeCompare(bVal) * filters[this.id] * -1;
+                        });
+                        rows.forEach(row => table.appendChild(row));
+                        rows.forEach(row => {
+                            row.children[0].textContent = "";
+                        });
+                        document.getElementById("th").classList.remove("scr");
+                    } else {
+                        rows.forEach((row, index) => {
+                            row.children[0].textContent = index + 1;
+                        });
+                        document.getElementById("th").classList.add("scr");
+                    }
+
+
+                }
+            });
+        });
+
+        // const data = {
+        //     "results": [
+        //         {
+        //             "country": {
+        //                 "name": "United States",
+        //                 "iso_alpha_2": "US"
+        //             },
+        //             "medals": {
+        //                 "gold": 10,
+        //                 "silver": 8,
+        //                 "bronze": 6,
+        //                 "total": 24
+        //             }
+        //         },
+        //         {
+        //             "country": {
+        //                 "name": "China",
+        //                 "iso_alpha_2": "CN"
+        //             },
+        //             "medals": {
+        //                 "gold": 8,
+        //                 "silver": 6,
+        //                 "bronze": 5,
+        //                 "total": 19
+        //             }
+        //         },
+        //         {
+        //             "country": {
+        //                 "name": "Japan",
+        //                 "iso_alpha_2": "JP"
+        //             },
+        //             "medals": {
+        //                 "gold": 6,
+        //                 "silver": 4,
+        //                 "bronze": 9,
+        //                 "total": 13
+        //             }
+        //         }
+        //     ]
+        // };
+
         fetch("https://olyapi-ariesninjadevs-projects.vercel.app/medals")
             .then(response => response.json())
             .then(data => {
